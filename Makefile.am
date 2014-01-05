@@ -16,7 +16,7 @@ addonsincludedir = $(uaserverincludedir)/addons
 
 configdir = $(sysconfdir)/opcua
 
-INCLUDES= \
+COMMON_INCLUDES= \
   -Iinclude \
   -I$(top_srcdir)/endpoint_services/include \
   -I$(top_srcdir)/services_registry/include \
@@ -25,7 +25,6 @@ INCLUDES= \
 TESTINCLUDES = $(GTEST_INCLUDES) $(GMOCK_INCLUDES)
 TESTLIBS = $(GTEST_LIB) $(GTEST_MAIN_LIB) $(GMOCK_LIBS)
 
-#-DSOAP_TYPE_ns3__Variant 
 SOAP_CPP_FLAGS = -DWITH_PURE_VIRTUAL -DLINUX
 
 lib_LTLIBRARIES = libopcua_soap_protocol.la libopcua_soap_server.la libopcua_soap_client.la 
@@ -42,17 +41,28 @@ src/serialization/serialize.cpp: Bindings.h
 
 src/namespaces.cpp: Bindings.h
 
+BasicHttpBinding_USCOREIDiscoveryEndpoint.nsmap : Bindings.h
+BasicHttpBinding_USCOREIRegistrationEndpoint.nsmap : Bindings.h
+BasicHttpBinding_USCOREISessionEndpoint.nsmap : Bindings.h
+
+
 soapBasicHttpBinding_USCOREIDiscoveryEndpointProxy.cpp : Bindings.h
+soapBasicHttpBinding_USCOREIDiscoveryEndpointProxy.h : Bindings.h
 
 soapBasicHttpBinding_USCOREIDiscoveryEndpointService.cpp : Bindings.h
+soapBasicHttpBinding_USCOREIDiscoveryEndpointService.h : Bindings.h
 
 soapBasicHttpBinding_USCOREIRegistrationEndpointProxy.cpp : Bindings.h
+soapBasicHttpBinding_USCOREIRegistrationEndpointProxy.h : Bindings.h
 
 soapBasicHttpBinding_USCOREIRegistrationEndpointService.cpp : Bindings.h
+soapBasicHttpBinding_USCOREIRegistrationEndpointService.h : Bindings.h
 
 soapBasicHttpBinding_USCOREISessionEndpointProxy.cpp : Bindings.h
+soapBasicHttpBinding_USCOREISessionEndpointProxy.h : Bindings.h
 
 soapBasicHttpBinding_USCOREISessionEndpointService.cpp : Bindings.h
+soapBasicHttpBinding_USCOREISessionEndpointService.h : Bindings.h
 
 soapC_001.cpp : Bindings.h
 
@@ -124,6 +134,9 @@ soapC_034.cpp: Bindings.h
 
 libopcua_soap_protocol_la_SOURCES = \
   Bindings.h \
+  BasicHttpBinding_USCOREIDiscoveryEndpoint.nsmap \
+  BasicHttpBinding_USCOREIRegistrationEndpoint.nsmap \
+  BasicHttpBinding_USCOREISessionEndpoint.nsmap \
   src/serialization/deserialize.cpp \
   src/serialization/deserialize.h \
   src/serialization/serialize.cpp \
@@ -132,11 +145,17 @@ libopcua_soap_protocol_la_SOURCES = \
   soapH.h \
   soapStub.h \
   soapBasicHttpBinding_USCOREIDiscoveryEndpointProxy.cpp \
+  soapBasicHttpBinding_USCOREIDiscoveryEndpointProxy.h \
   soapBasicHttpBinding_USCOREIDiscoveryEndpointService.cpp \
+  soapBasicHttpBinding_USCOREIDiscoveryEndpointService.h \
   soapBasicHttpBinding_USCOREIRegistrationEndpointProxy.cpp \
+  soapBasicHttpBinding_USCOREIRegistrationEndpointProxy.h \
   soapBasicHttpBinding_USCOREIRegistrationEndpointService.cpp \
+  soapBasicHttpBinding_USCOREIRegistrationEndpointService.h \
   soapBasicHttpBinding_USCOREISessionEndpointProxy.cpp \
+  soapBasicHttpBinding_USCOREISessionEndpointProxy.h \
   soapBasicHttpBinding_USCOREISessionEndpointService.cpp \
+  soapBasicHttpBinding_USCOREISessionEndpointService.h \
   soapC_001.cpp \
   soapC_002.cpp \
   soapC_003.cpp \
@@ -172,7 +191,7 @@ libopcua_soap_protocol_la_SOURCES = \
   soapC_033.cpp \
   soapC_034.cpp
 
-libopcua_soap_protocol_la_CPPFLAGS = $(INCLUDES) $(GSOAP_CFLAGS) $(SOAP_CPP_FLAGS)
+libopcua_soap_protocol_la_CPPFLAGS = $(COMMON_INCLUDES) $(GSOAP_CFLAGS) $(SOAP_CPP_FLAGS)
 libopcua_soap_protocol_la_LDFLAGS = $(UA_MAPPING_LIBS) $(GSOAP_LIBS) -ldl -lpthread  -Wl,--no-undefined
 
 
@@ -218,7 +237,7 @@ libopcua_soap_server_la_SOURCES = \
   src/soap_server.cpp \
   src/soap_server.h
 
-libopcua_soap_server_la_CPPFLAGS = $(INCLUDES) $(GSOAP_CFLAGS) $(SOAP_CPP_FLAGS)
+libopcua_soap_server_la_CPPFLAGS = $(COMMON_INCLUDES) $(GSOAP_CFLAGS) $(SOAP_CPP_FLAGS)
 libopcua_soap_server_la_LIBADD = libopcua_soap_protocol.la
 libopcua_soap_server_la_LDFLAGS = $(OPC_CORE_LIBS) $(UA_MAPPING_LIBS) $(GSOAP_LIBS) -ldl -lpthread  -Wl,--no-undefined
 
@@ -245,6 +264,7 @@ tests/get_endpoints.cpp: Bindings.h
 test_soap_SOURCES = \
   tests/attributes.cpp \
   tests/browse.cpp \
+  tests/common.h \
   tests/get_endpoints.cpp \
   tests/variant.cpp
 
@@ -257,6 +277,13 @@ install-exec-hook:
 	$(bindir)/opcua --register-module --id=http --path=libopcua_soap_client.so || test true
 
 
+clean-local:
+	rm -rvf opcua-wsdl*$(VERSION)*
+
+dist-deb: dist
+	$(top_srcdir)/make_deb.sh
+
+
 EXTRA_DIST = \
   Bindings.wsdl \
   Endpoints.wsdl \
@@ -265,7 +292,8 @@ EXTRA_DIST = \
   stlvector.h \
   typemap.dat \
   Types.bsd \
-  Types.xsd
+  Types.xsd \
+  debian make_deb.sh
 
 CLEANFILES= \
   Bindings.h \
