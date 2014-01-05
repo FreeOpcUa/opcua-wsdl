@@ -36,7 +36,7 @@ TEST(Browse, Request)
 
   ASSERT_EQ(req->RequestedMaxReferencesPerNode, opcua.Query.MaxReferenciesPerNode);
   ASSERT_NE(req->View, nullptr);
-  ASSERT_EQ(req->View->Timestamp, opcua.Query.View.Timestamp);
+  ASSERT_EQ(req->View->Timestamp, OpcUa::ToTimeT(opcua.Query.View.Timestamp));
   ASSERT_EQ(req->View->ViewVersion, opcua.Query.View.Version);
 
   ASSERT_NODE_ID_EQ(req->View->ViewId, "ns=2;i=2;");

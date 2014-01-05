@@ -284,7 +284,7 @@ namespace
   ns3__ViewDescription* CreateViewDescription(soap* s, const OpcUa::ViewDescription& view)
   {
     ns3__ViewDescription* result = soap_new_ns3__ViewDescription(s, 1);
-    result->Timestamp = view.Timestamp;
+    result->Timestamp = OpcUa::ToTimeT(view.Timestamp);
     result->ViewId = CreateNodeID(s, view.ID);
     result->ViewVersion = view.Version;
     return result;

@@ -715,6 +715,7 @@ namespace OpcUa
     {
       result.Query.NodesToBrowse = ::Deserialize(request->NodesToBrowse);
     }
+    // TODO deserialize view description.
     result.Query.MaxReferenciesPerNode = request->RequestedMaxReferencesPerNode;
     return  result;
   }
