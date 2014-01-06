@@ -1,6 +1,6 @@
 Source: opcua-wsdl
 Priority: extra
-Maintainer: treww <rykovanov.as@gmail.com>
+Maintainer: Alexander Rykovanov <rykovanov.as@gmail.com>
 Build-Depends: debhelper (>= 8.0.0), autotools-dev
 Standards-Version: 3.9.4
 Section: libs
@@ -9,19 +9,19 @@ Vcs-Git: https://github.com/treww/opcua-wsdl.git
 
 Package: opcua-wsdl-common
 Section: libs
-Architecture: any
+Architecture: amd64 i386
 Depends: ${shlibs:Depends}, ${misc:Depends}, gsoap
 Description: OPCUA soap protocol.
 
 Package: opcua-wsdl-server
 Section: libs
-Architecture: any
+Architecture: amd64 i386
 Depends: ${shlibs:Depends}, ${misc:Depends}, opcuaserver (= 0.1.2), opcua-wsdl-common (= 0.1.2)
 Description: OPCUA soap protocol.
 
 Package: opcua-wsdl-client
 Section: libs
-Architecture: any
+Architecture: amd64 i368
 Depends: ${shlibs:Depends}, ${misc:Depends}, opcuaclient (= 0.1.2), opcua-wsdl-common (= 0.1.2)
 Description: OPCUA soap protocol.
 
