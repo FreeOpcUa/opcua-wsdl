@@ -1,3 +1,4 @@
 etc/opcua/client/soap_client.conf
-usr/lib/libopcua_soap_server.a
-usr/lib/libopcua_soap_server.so*
+usr/lib/libopcua_soap_client.a
+usr/lib/libopcua_soap_client.so*
+

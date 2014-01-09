@@ -16,12 +16,12 @@ Description: OPCUA soap protocol.
 Package: opcua-wsdl-server
 Section: libs
 Architecture: amd64 i386
-Depends: ${shlibs:Depends}, ${misc:Depends}, opcuaserver (= 0.1.2), opcua-wsdl-common (= 0.1.2)
-Description: OPCUA soap protocol.
+Depends: ${shlibs:Depends}, ${misc:Depends}, opcuaserver (= 0.1.3), opcua-wsdl-common (= 0.1.3)
+Description: OPCUA soap server addon.
 
 Package: opcua-wsdl-client
 Section: libs
-Architecture: amd64 i368
-Depends: ${shlibs:Depends}, ${misc:Depends}, opcuaclient (= 0.1.2), opcua-wsdl-common (= 0.1.2)
-Description: OPCUA soap protocol.
+Architecture: amd64 i386
+Depends: ${shlibs:Depends}, ${misc:Depends}, opcuaclient (= 0.1.3), opcua-wsdl-common (= 0.1.3)
+Description: OPCUA soap client addon.
 
