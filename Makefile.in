@@ -25,6 +25,7 @@
 # $Date: $
 # $Revision: $
 
+
 VPATH = @srcdir@
 am__make_dryrun = \
   { \
@@ -66,9 +67,9 @@ check_PROGRAMS = test_soap$(EXEEXT)
 subdir = .
 DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/config.h.in \
-	$(top_srcdir)/configure AUTHORS COPYING ChangeLog INSTALL NEWS \
-	ar-lib config.guess config.sub depcomp install-sh ltmain.sh \
-	missing
+	$(top_srcdir)/configure $(top_srcdir)/debian/changelog.in \
+	AUTHORS COPYING ChangeLog INSTALL NEWS ar-lib config.guess \
+	config.sub depcomp install-sh ltmain.sh missing
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
@@ -77,7 +78,7 @@ am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = config.h
-CONFIG_CLEAN_FILES =
+CONFIG_CLEAN_FILES = debian/changelog
 CONFIG_CLEAN_VPATH_FILES =
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
 am__vpath_adj = case $$p in \
@@ -106,7 +107,8 @@ am__uninstall_files_from_dir = { \
     || { echo " ( cd '$$dir' && rm -f" $$files ")"; \
          $(am__cd) "$$dir" && rm -f $$files; }; \
   }
-am__installdirs = "$(DESTDIR)$(libdir)"
+am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(clientconfigdir)" \
+	"$(DESTDIR)$(serverconfigdir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libopcua_soap_client_la_DEPENDENCIES = libopcua_soap_protocol.la
 am_libopcua_soap_client_la_OBJECTS =  \
@@ -223,6 +225,7 @@ am__can_run_installinfo = \
     n|no|NO) false;; \
     *) (install-info --version) >/dev/null 2>&1;; \
   esac
+DATA = $(clientconfig_DATA) $(serverconfig_DATA)
 ETAGS = etags
 CTAGS = ctags
 am__tty_colors = \
@@ -298,6 +301,7 @@ NM = @NM@
 NMEDIT = @NMEDIT@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
+OPCUA_SERVER_INCLUDES = @OPCUA_SERVER_INCLUDES@
 OPC_CLIENT_INCLUDES = @OPC_CLIENT_INCLUDES@
 OPC_CLIENT_LIBS = @OPC_CLIENT_LIBS@
 OPC_CORE_INCLUDES = @OPC_CORE_INCLUDES@
@@ -316,12 +320,13 @@ PKG_CONFIG = @PKG_CONFIG@
 PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
 PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
 RANLIB = @RANLIB@
+RELEASE_DATE = @RELEASE_DATE@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
-UA_MAPPING_INCLUDES = @UA_MAPPING_INCLUDES@
-UA_MAPPING_LIBS = @UA_MAPPING_LIBS@
+UAMAPPINGS_INCLUDES = @UAMAPPINGS_INCLUDES@
+UAMAPPINGS_LIBS = @UAMAPPINGS_LIBS@
 VERSION = @VERSION@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
@@ -382,11 +387,13 @@ uaclientincludedir = $(opcuaincludedir)/client
 uaserverincludedir = $(opcuaincludedir)/server
 addonsincludedir = $(uaserverincludedir)/addons
 configdir = $(sysconfdir)/opcua
+serverconfigdir = $(configdir)/server
+clientconfigdir = $(configdir)/client
+clientconfig_DATA = $(top_srcdir)/configs/soap_client.conf
+serverconfig_DATA = $(top_srcdir)/configs/soap_server.conf
 COMMON_INCLUDES = \
   -Iinclude \
-  -I$(top_srcdir)/endpoint_services/include \
-  -I$(top_srcdir)/services_registry/include \
-  $(OPC_CORE_INCLUDES) $(UA_MAPPING_INCLUDES) $(OPC_CLIENT_INCLUDES)
+  $(OPC_CORE_INCLUDES) $(UAMAPPINGS_INCLUDES) $(OPC_CLIENT_INCLUDES) $(OPCUA_SERVER_INCLUDES)
 
 TESTINCLUDES = $(GTEST_INCLUDES) $(GMOCK_INCLUDES)
 TESTLIBS = $(GTEST_LIB) $(GTEST_MAIN_LIB) $(GMOCK_LIBS)
@@ -452,7 +459,7 @@ libopcua_soap_protocol_la_SOURCES = \
   soapC_034.cpp
 
 libopcua_soap_protocol_la_CPPFLAGS = $(COMMON_INCLUDES) $(GSOAP_CFLAGS) $(SOAP_CPP_FLAGS)
-libopcua_soap_protocol_la_LDFLAGS = $(UA_MAPPING_LIBS) $(GSOAP_LIBS) -ldl -lpthread  -Wl,--no-undefined
+libopcua_soap_protocol_la_LDFLAGS = $(UAMAPPINGS_LIBS) $(GSOAP_LIBS) -ldl -lpthread  -Wl,--no-undefined
 libopcua_soap_server_la_SOURCES = \
   src/discovery_service.cpp \
   src/discovery_service.h \
@@ -470,13 +477,13 @@ libopcua_soap_server_la_SOURCES = \
 
 libopcua_soap_server_la_CPPFLAGS = $(COMMON_INCLUDES) $(GSOAP_CFLAGS) $(SOAP_CPP_FLAGS)
 libopcua_soap_server_la_LIBADD = libopcua_soap_protocol.la
-libopcua_soap_server_la_LDFLAGS = $(OPC_CORE_LIBS) $(UA_MAPPING_LIBS) $(GSOAP_LIBS) -ldl -lpthread  -Wl,--no-undefined
+libopcua_soap_server_la_LDFLAGS = $(OPC_CORE_LIBS) $(UAMAPPINGS_LIBS) $(GSOAP_LIBS) -ldl -lpthread  -Wl,--no-undefined
 libopcua_soap_client_la_SOURCES = \
  src/soap_client_addon.cpp
 
-libopcua_soap_client_la_CPPFLAGS = $(GSOAP_CFLAGS) $(SOAP_CPP_FLAGS)
+libopcua_soap_client_la_CPPFLAGS = $(COMMON_INCLUDES) $(GSOAP_CFLAGS) $(SOAP_CPP_FLAGS)
 libopcua_soap_client_la_LIBADD = libopcua_soap_protocol.la
-libopcua_soap_client_la_LDFLAGS = $(OPC_CORE_LIBS) $(UA_MAPPING_LIBS) $(GSOAP_LIBS) -ldl -lpthread -Wl,--no-undefined
+libopcua_soap_client_la_LDFLAGS = $(OPC_CORE_LIBS) $(UAMAPPINGS_LIBS) $(GSOAP_LIBS) -ldl -lpthread -Wl,--no-undefined
 test_soap_SOURCES = \
   tests/attributes.cpp \
   tests/browse.cpp \
@@ -484,11 +491,13 @@ test_soap_SOURCES = \
   tests/get_endpoints.cpp \
   tests/variant.cpp
 
-test_soap_CPPFLAGS = $(TESTINCLUDES) $(GSOAP_CFLAGS) $(SOAP_CPP_FLAGS)
+test_soap_CPPFLAGS = $(COMMON_INCLUDES) $(TESTINCLUDES) $(GSOAP_CFLAGS) $(SOAP_CPP_FLAGS)
 test_soap_LDADD = libopcua_soap_protocol.la
-test_soap_LDFLAGS = $(TESTLIBS) $(OPC_CORE_LIBS) $(UA_MAPPING_LIBS) $(GSOAP_LIBS) -ldl -lpthread -Wl,--no-undefined
+test_soap_LDFLAGS = $(TESTLIBS) $(OPC_CORE_LIBS) $(UAMAPPINGS_LIBS) $(GSOAP_LIBS) -ldl -lpthread -Wl,--no-undefined
 EXTRA_DIST = \
   Bindings.wsdl \
+  configs/soap_client.conf \
+  configs/soap_server.conf \
   Endpoints.wsdl \
   PortTypes.wsdl \
   Services.wsdl \
@@ -572,6 +581,8 @@ $(srcdir)/config.h.in:  $(am__configure_deps)
 
 distclean-hdr:
 	-rm -f config.h stamp-h1
+debian/changelog: $(top_builddir)/config.status $(top_srcdir)/debian/changelog.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
 install-libLTLIBRARIES: $(lib_LTLIBRARIES)
 	@$(NORMAL_INSTALL)
 	@list='$(lib_LTLIBRARIES)'; test -n "$(libdir)" || list=; \
@@ -1119,6 +1130,48 @@ clean-libtool:
 
 distclean-libtool:
 	-rm -f libtool config.lt
+install-clientconfigDATA: $(clientconfig_DATA)
+	@$(NORMAL_INSTALL)
+	@list='$(clientconfig_DATA)'; test -n "$(clientconfigdir)" || list=; \
+	if test -n "$$list"; then \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(clientconfigdir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(clientconfigdir)" || exit 1; \
+	fi; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(clientconfigdir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(clientconfigdir)" || exit $$?; \
+	done
+
+uninstall-clientconfigDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(clientconfig_DATA)'; test -n "$(clientconfigdir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	dir='$(DESTDIR)$(clientconfigdir)'; $(am__uninstall_files_from_dir)
+install-serverconfigDATA: $(serverconfig_DATA)
+	@$(NORMAL_INSTALL)
+	@list='$(serverconfig_DATA)'; test -n "$(serverconfigdir)" || list=; \
+	if test -n "$$list"; then \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(serverconfigdir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(serverconfigdir)" || exit 1; \
+	fi; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(serverconfigdir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(serverconfigdir)" || exit $$?; \
+	done
+
+uninstall-serverconfigDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(serverconfig_DATA)'; test -n "$(serverconfigdir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	dir='$(DESTDIR)$(serverconfigdir)'; $(am__uninstall_files_from_dir)
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
@@ -1431,9 +1484,9 @@ check-am: all-am
 	$(MAKE) $(AM_MAKEFLAGS) $(check_PROGRAMS)
 	$(MAKE) $(AM_MAKEFLAGS) check-TESTS
 check: check-am
-all-am: Makefile $(LTLIBRARIES) config.h
+all-am: Makefile $(LTLIBRARIES) $(DATA) config.h
 installdirs:
-	for dir in "$(DESTDIR)$(libdir)"; do \
+	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(clientconfigdir)" "$(DESTDIR)$(serverconfigdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -1491,7 +1544,7 @@ info: info-am
 
 info-am:
 
-install-data-am:
+install-data-am: install-clientconfigDATA install-serverconfigDATA
 
 install-dvi: install-dvi-am
 
@@ -1540,7 +1593,8 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-libLTLIBRARIES
+uninstall-am: uninstall-clientconfigDATA uninstall-libLTLIBRARIES \
+	uninstall-serverconfigDATA
 
 .MAKE: all check-am install-am install-exec-am install-strip
 
@@ -1552,15 +1606,17 @@ uninstall-am: uninstall-libLTLIBRARIES
 	distclean-generic distclean-hdr distclean-libtool \
 	distclean-tags distcleancheck distdir distuninstallcheck dvi \
 	dvi-am html html-am info info-am install install-am \
-	install-data install-data-am install-dvi install-dvi-am \
-	install-exec install-exec-am install-exec-hook install-html \
-	install-html-am install-info install-info-am \
-	install-libLTLIBRARIES install-man install-pdf install-pdf-am \
-	install-ps install-ps-am install-strip installcheck \
+	install-clientconfigDATA install-data install-data-am \
+	install-dvi install-dvi-am install-exec install-exec-am \
+	install-exec-hook install-html install-html-am install-info \
+	install-info-am install-libLTLIBRARIES install-man install-pdf \
+	install-pdf-am install-ps install-ps-am \
+	install-serverconfigDATA install-strip installcheck \
 	installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-compile \
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags uninstall uninstall-am uninstall-libLTLIBRARIES
+	tags uninstall uninstall-am uninstall-clientconfigDATA \
+	uninstall-libLTLIBRARIES uninstall-serverconfigDATA
 
 
 Bindings.h:
@@ -1706,7 +1762,7 @@ clean-local:
 	rm -rvf opcua-wsdl*$(VERSION)*
 
 dist-deb: dist
-	$(top_srcdir)/make_deb.sh
+	VERSION=$(VERSION) $(top_srcdir)/make_deb.sh
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

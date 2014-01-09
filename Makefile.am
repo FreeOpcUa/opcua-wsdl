@@ -15,12 +15,15 @@ uaserverincludedir = $(opcuaincludedir)/server
 addonsincludedir = $(uaserverincludedir)/addons
 
 configdir = $(sysconfdir)/opcua
+serverconfigdir=$(configdir)/server
+clientconfigdir=$(configdir)/client
+
+clientconfig_DATA=$(top_srcdir)/configs/soap_client.conf
+serverconfig_DATA=$(top_srcdir)/configs/soap_server.conf
 
 COMMON_INCLUDES= \
   -Iinclude \
-  -I$(top_srcdir)/endpoint_services/include \
-  -I$(top_srcdir)/services_registry/include \
-  $(OPC_CORE_INCLUDES) $(UA_MAPPING_INCLUDES) $(OPC_CLIENT_INCLUDES)
+  $(OPC_CORE_INCLUDES) $(UAMAPPINGS_INCLUDES) $(OPC_CLIENT_INCLUDES) $(OPCUA_SERVER_INCLUDES)
 
 TESTINCLUDES = $(GTEST_INCLUDES) $(GMOCK_INCLUDES)
 TESTLIBS = $(GTEST_LIB) $(GTEST_MAIN_LIB) $(GMOCK_LIBS)
@@ -192,7 +195,7 @@ libopcua_soap_protocol_la_SOURCES = \
   soapC_034.cpp
 
 libopcua_soap_protocol_la_CPPFLAGS = $(COMMON_INCLUDES) $(GSOAP_CFLAGS) $(SOAP_CPP_FLAGS)
-libopcua_soap_protocol_la_LDFLAGS = $(UA_MAPPING_LIBS) $(GSOAP_LIBS) -ldl -lpthread  -Wl,--no-undefined
+libopcua_soap_protocol_la_LDFLAGS = $(UAMAPPINGS_LIBS) $(GSOAP_LIBS) -ldl -lpthread  -Wl,--no-undefined
 
 
 src/discovery_service.cpp : Bindings.h
@@ -239,7 +242,7 @@ libopcua_soap_server_la_SOURCES = \
 
 libopcua_soap_server_la_CPPFLAGS = $(COMMON_INCLUDES) $(GSOAP_CFLAGS) $(SOAP_CPP_FLAGS)
 libopcua_soap_server_la_LIBADD = libopcua_soap_protocol.la
-libopcua_soap_server_la_LDFLAGS = $(OPC_CORE_LIBS) $(UA_MAPPING_LIBS) $(GSOAP_LIBS) -ldl -lpthread  -Wl,--no-undefined
+libopcua_soap_server_la_LDFLAGS = $(OPC_CORE_LIBS) $(UAMAPPINGS_LIBS) $(GSOAP_LIBS) -ldl -lpthread  -Wl,--no-undefined
 
 
 src/soap_client_addon.cpp: Bindings.h
@@ -247,9 +250,9 @@ src/soap_client_addon.cpp: Bindings.h
 libopcua_soap_client_la_SOURCES = \
  src/soap_client_addon.cpp
 
-libopcua_soap_client_la_CPPFLAGS = $(GSOAP_CFLAGS) $(SOAP_CPP_FLAGS)
+libopcua_soap_client_la_CPPFLAGS = $(COMMON_INCLUDES) $(GSOAP_CFLAGS) $(SOAP_CPP_FLAGS)
 libopcua_soap_client_la_LIBADD = libopcua_soap_protocol.la
-libopcua_soap_client_la_LDFLAGS = $(OPC_CORE_LIBS) $(UA_MAPPING_LIBS) $(GSOAP_LIBS) -ldl -lpthread -Wl,--no-undefined
+libopcua_soap_client_la_LDFLAGS = $(OPC_CORE_LIBS) $(UAMAPPINGS_LIBS) $(GSOAP_LIBS) -ldl -lpthread -Wl,--no-undefined
 
 TESTS = test_soap
 check_PROGRAMS = test_soap
@@ -269,9 +272,9 @@ test_soap_SOURCES = \
   tests/variant.cpp
 
 
-test_soap_CPPFLAGS = $(TESTINCLUDES) $(GSOAP_CFLAGS) $(SOAP_CPP_FLAGS)
+test_soap_CPPFLAGS = $(COMMON_INCLUDES) $(TESTINCLUDES) $(GSOAP_CFLAGS) $(SOAP_CPP_FLAGS)
 test_soap_LDADD = libopcua_soap_protocol.la
-test_soap_LDFLAGS = $(TESTLIBS) $(OPC_CORE_LIBS) $(UA_MAPPING_LIBS) $(GSOAP_LIBS) -ldl -lpthread -Wl,--no-undefined
+test_soap_LDFLAGS = $(TESTLIBS) $(OPC_CORE_LIBS) $(UAMAPPINGS_LIBS) $(GSOAP_LIBS) -ldl -lpthread -Wl,--no-undefined
 
 install-exec-hook:
 	$(bindir)/opcua --register-module --id=http --path=libopcua_soap_client.so || test true
@@ -281,11 +284,13 @@ clean-local:
 	rm -rvf opcua-wsdl*$(VERSION)*
 
 dist-deb: dist
-	$(top_srcdir)/make_deb.sh
+	VERSION=$(VERSION) $(top_srcdir)/make_deb.sh
 
 
 EXTRA_DIST = \
   Bindings.wsdl \
+  configs/soap_client.conf \
+  configs/soap_server.conf \
   Endpoints.wsdl \
   PortTypes.wsdl \
   Services.wsdl \
