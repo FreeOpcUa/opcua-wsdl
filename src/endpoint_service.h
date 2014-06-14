@@ -10,7 +10,8 @@
 
 #pragma once
 
-#include <opc/ua/computer.h>
+#include <opc/ua/server.h>
+
 #include <soapBasicHttpBinding_USCOREISessionEndpointService.h>
 
 
@@ -23,29 +24,29 @@ namespace OpcUa
       typedef BasicHttpBinding_USCOREISessionEndpointService ParentType;
 
     public:
-      EndpointService(OpcUa::Remote::Computer::SharedPtr computer, bool debug)
-        : Computer(computer)
+      EndpointService(OpcUa::Remote::Server::SharedPtr computer, bool debug)
+        : Server(computer)
         , Debug(debug)
       {
       }
 
-      EndpointService(OpcUa::Remote::Computer::SharedPtr computer, bool debug, struct soap& s)
+      EndpointService(OpcUa::Remote::Server::SharedPtr computer, bool debug, struct soap& s)
         : ParentType(s)
-        , Computer(computer)
+        , Server(computer)
         , Debug(debug)
       {
       }
 
-      EndpointService(OpcUa::Remote::Computer::SharedPtr computer, bool debug, soap_mode iomode)
+      EndpointService(OpcUa::Remote::Server::SharedPtr computer, bool debug, soap_mode iomode)
         : ParentType(iomode)
-        , Computer(computer)
+        , Server(computer)
         , Debug(debug)
       {
       }
 
-      EndpointService(OpcUa::Remote::Computer::SharedPtr computer, bool debug, soap_mode imode, soap_mode omode)
+      EndpointService(OpcUa::Remote::Server::SharedPtr computer, bool debug, soap_mode imode, soap_mode omode)
         : ParentType(imode, omode)
-        , Computer(computer)
+        , Server(computer)
         , Debug(debug)
       {
       }
@@ -85,7 +86,7 @@ namespace OpcUa
       virtual int DeleteSubscriptions(ns3__DeleteSubscriptionsRequest *ns3__DeleteSubscriptionsRequest_, ns3__DeleteSubscriptionsResponse *ns3__DeleteSubscriptionsResponse_);
 
     private:
-      OpcUa::Remote::Computer::SharedPtr Computer;
+      OpcUa::Remote::Server::SharedPtr Server;
       bool Debug;
     };
   }

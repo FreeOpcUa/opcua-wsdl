@@ -19,7 +19,7 @@ namespace OpcUa
   {
     BasicHttpBinding_USCOREISessionEndpointService *EndpointService::copy()
     {
-      return new EndpointService(Computer, Debug);
+      return new EndpointService(Server, Debug);
     }
 
     int EndpointService::CreateSession(ns3__CreateSessionRequest *ns3__CreateSessionRequest_, ns3__CreateSessionResponse *ns3__CreateSessionResponse_)
@@ -68,7 +68,7 @@ namespace OpcUa
 
       const OpcUa::BrowseRequest request = OpcUa::Soap::Deserialize(ns3__BrowseRequest_);
       BrowseResult result;
-      result.Referencies = Computer->Views()->Browse(request.Query);
+      result.Referencies = Server->Views()->Browse(request.Query);
       OpcUa::BrowseResponse response;
       response.Results.push_back(result);
       *ns3__BrowseResponse_ = *OpcUa::Soap::Serialize(this, response);
@@ -113,7 +113,7 @@ namespace OpcUa
 
       const OpcUa::ReadRequest request = OpcUa::Soap::Deserialize(ns3__ReadRequest_);
       OpcUa::ReadResponse response;
-      response.Result.Results = Computer->Attributes()->Read(request.Parameters);
+      response.Result.Results = Server->Attributes()->Read(request.Parameters);
       *ns3__ReadResponse_ = *OpcUa::Soap::Serialize(this, response);
 
       if (Debug) std::clog << "SOAP: Processed ReadRequest." << std::endl;
@@ -131,7 +131,7 @@ namespace OpcUa
 
       const OpcUa::WriteRequest request = OpcUa::Soap::Deserialize(ns3__WriteRequest_);
       OpcUa::WriteResponse response;
-      response.Result.StatusCodes = Computer->Attributes()->Write(request.Parameters.NodesToWrite);
+      response.Result.StatusCodes = Server->Attributes()->Write(request.Parameters.NodesToWrite);
       *ns3__WriteResponse_ = *OpcUa::Soap::Serialize(this, response);
 
       if (Debug) std::clog << "SOAP: Processed WriteRequest." << std::endl;

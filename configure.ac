@@ -41,7 +41,7 @@ AC_ARG_WITH([gmock],
             [AS_HELP_STRING([--with-gmock=DIR], [defines path to gmock root directory])],
             [ 
               AC_SUBST([GMOCK_LIB], [-Wl,--whole-archive,$with_gmock/lib/.libs/libgmock.a,--no-whole-archive])
-              AC_SUBST([GMOCK_INCLUDES], [-I$with_mock/include])
+              AC_SUBST([GMOCK_INCLUDES], [-I$with_gmock/include])
               AC_MSG_NOTICE([gmock path: $GMOCK_INCLUDES]) 
             ], 
             [ 

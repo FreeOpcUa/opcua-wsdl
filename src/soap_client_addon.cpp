@@ -109,6 +109,12 @@ namespace
       return std::vector<OpcUa::ReferenceDescription>();
     }
 
+    virtual std::vector<OpcUa::BrowsePathResult> TranslateBrowsePathsToNodeIds(const OpcUa::TranslateBrowsePathsParameters& params) const
+    {
+      throw std::runtime_error("Not implemented.");
+    }
+
+
   private:
     std::string Url;
   };
@@ -136,7 +142,7 @@ namespace
     }
   };
 
-  class SoapComputer : public OpcUa::Remote::Computer
+  class SoapComputer : public OpcUa::Remote::Server
   {
   public:
     SoapComputer(const std::string& url)
@@ -170,14 +176,19 @@ namespace
       return OpcUa::Remote::ViewServices::SharedPtr(new SoapViews(Url));
     }
 
+    virtual OpcUa::Remote::NodeManagementServices::SharedPtr NodeManagement() const
+    {
+      throw std::runtime_error("Not implemented.");
+    }
+
     virtual OpcUa::Remote::AttributeServices::SharedPtr Attributes() const
     {
-      return OpcUa::Remote::AttributeServices::SharedPtr();
+      throw std::runtime_error("Not implemented.");
     }
 
     virtual OpcUa::Remote::SubscriptionServices::SharedPtr Subscriptions() const
     {
-      return OpcUa::Remote::SubscriptionServices::SharedPtr();
+      throw std::runtime_error("Not implemented.");
     }
 
   public:
@@ -204,9 +215,9 @@ namespace
       return "http";
     }
 
-    virtual OpcUa::Remote::Computer::SharedPtr Connect(const std::string& url)
+    virtual OpcUa::Remote::Server::SharedPtr Connect(const std::string& url)
     {
-      return OpcUa::Remote::Computer::SharedPtr(new SoapComputer(url));
+      return OpcUa::Remote::Server::SharedPtr(new SoapComputer(url));
     }
   };
 }

@@ -11,6 +11,7 @@
 #include "serialize.h"
 
 #include <opc/ua/protocol/types.h>
+#include <opc/ua/string_utils.h>
 
 #include <algorithm>
 #include <functional>
@@ -56,38 +57,10 @@ namespace
     return lst;
   }
 
-  std::string GetNodeIDString(const OpcUa::NodeID& id)
-  {
-    std::stringstream stream;
-    stream << "ns=" << id.GetNamespaceIndex() << ";";
-    if (id.IsInteger())
-    {
-      stream << "i=" << id.GetIntegerIdentifier() << ";";
-    }
-    else if(id.IsString())
-    {
-      stream << "s=" << id.GetStringIdentifier() << ";";
-    }
-    else if (id.IsGuid())
-    {
-      stream << "g=";
-      const OpcUa::Guid& guid = id.GetGuidIdentifier();
-      stream << std::hex << guid.Data1 << "-";
-      stream << std::hex << guid.Data2 << "-";
-      stream << std::hex << guid.Data3 << "-";
-
-      for (std::size_t i = 0; i < 8; ++i)
-      {
-        stream << std::hex << guid.Data4[i];
-      }
-    }
-    return stream.str();
-  }
-
   ns3__NodeId* CreateNodeID(soap* s, const OpcUa::NodeID& id)
   {
     ns3__NodeId* result = soap_new__ns3__NodeId(s, 1);
-    result->Identifier = CreateString(s, GetNodeIDString(id));
+    result->Identifier = CreateString(s, OpcUa::ToString(id));
     return result;
   }
 
@@ -105,15 +78,7 @@ namespace
   {
     ns3__ExpandedNodeId* result = soap_new__ns3__ExpandedNodeId(s, 1);
     std::stringstream stream;
-    if (id.HasServerIndex())
-    {
-      stream << "srv=" << id.ServerIndex << ";";
-    }
-    if (id.HasNamespaceURI())
-    {
-      stream << "nsu=" << id.NamespaceURI << ";";
-    }
-    stream << GetNodeIDString(id);
+    stream << OpcUa::ToString(id);
     result->Identifier = CreateString(s, stream.str());
     return result;
   }

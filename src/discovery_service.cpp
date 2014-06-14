@@ -20,7 +20,7 @@ namespace OpcUa
 
     BasicHttpBinding_USCOREIDiscoveryEndpointService *DiscoveryService::copy()
     {
-      return new DiscoveryService(Computer, Debug);
+      return new DiscoveryService(Server, Debug);
     }
 
     int DiscoveryService::FindServers(ns3__FindServersRequest *ns3__FindServersRequest_, ns3__FindServersResponse *ns3__FindServersResponse_)
@@ -38,7 +38,7 @@ namespace OpcUa
       }
 
       OpcUa::GetEndpointsResponse resp;
-      resp.Endpoints = Computer->Endpoints()->GetEndpoints(filter);
+      resp.Endpoints = Server->Endpoints()->GetEndpoints(filter);
       if (Debug) std::clog << "Found " << resp.Endpoints.size() << " endpoints." << std::endl;
 
       if (Debug) std::clog << "Serializing response." << std::endl;

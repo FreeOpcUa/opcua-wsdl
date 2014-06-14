@@ -15458,7 +15458,7 @@ if test "${with_gmock+set}" = set; then :
   withval=$with_gmock;
               GMOCK_LIB=-Wl,--whole-archive,$with_gmock/lib/.libs/libgmock.a,--no-whole-archive
 
-              GMOCK_INCLUDES=-I$with_mock/include
+              GMOCK_INCLUDES=-I$with_gmock/include
 
               { $as_echo "$as_me:${as_lineno-$LINENO}: gmock path: $GMOCK_INCLUDES" >&5
 $as_echo "$as_me: gmock path: $GMOCK_INCLUDES" >&6;}

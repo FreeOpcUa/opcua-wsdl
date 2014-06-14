@@ -12,7 +12,7 @@
 
 #include <soapBasicHttpBinding_USCOREIDiscoveryEndpointService.h>
 
-#include <opc/ua/computer.h>
+#include <opc/ua/server.h>
 
 namespace OpcUa
 {
@@ -22,29 +22,29 @@ namespace OpcUa
     {
       typedef BasicHttpBinding_USCOREIDiscoveryEndpointService ParentType;
     public:
-      DiscoveryService(OpcUa::Remote::Computer::SharedPtr computer, bool debug)
-        : Computer(computer)
+      DiscoveryService(OpcUa::Remote::Server::SharedPtr computer, bool debug)
+        : Server(computer)
         , Debug(debug)
       {
       }
 
-      DiscoveryService(OpcUa::Remote::Computer::SharedPtr computer, bool debug, struct soap& s)
+      DiscoveryService(OpcUa::Remote::Server::SharedPtr computer, bool debug, struct soap& s)
         : ParentType(s)
-        , Computer(computer)
+        , Server(computer)
         , Debug(debug)
       {
       }
 
-      DiscoveryService(OpcUa::Remote::Computer::SharedPtr computer, bool debug, soap_mode iomode)
+      DiscoveryService(OpcUa::Remote::Server::SharedPtr computer, bool debug, soap_mode iomode)
         : ParentType(iomode)
-        , Computer(computer)
+        , Server(computer)
         , Debug(debug)
       {
       }
 
-      DiscoveryService(OpcUa::Remote::Computer::SharedPtr computer, bool debug, soap_mode imode, soap_mode omode)
+      DiscoveryService(OpcUa::Remote::Server::SharedPtr computer, bool debug, soap_mode imode, soap_mode omode)
         : ParentType(imode, omode)
-        , Computer(computer)
+        , Server(computer)
         , Debug(debug)
       {
       }
@@ -54,7 +54,7 @@ namespace OpcUa
       virtual int GetEndpoints(ns3__GetEndpointsRequest *ns3__GetEndpointsRequest_, ns3__GetEndpointsResponse *ns3__GetEndpointsResponse_);
 
     private:
-      OpcUa::Remote::Computer::SharedPtr Computer;
+      OpcUa::Remote::Server::SharedPtr Server;
       bool Debug;
     };
   }

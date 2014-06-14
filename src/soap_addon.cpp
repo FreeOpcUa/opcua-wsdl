@@ -29,8 +29,8 @@ SoapAddon::SoapAddon()
 void SoapAddon::Initialize(Common::AddonsManager& addons, const Common::AddonParameters& params)
 {
   ApplyAddonParameters(params);
-  OpcUa::Server::ServicesRegistryAddon::SharedPtr servicesRegistry = addons.GetAddon<OpcUa::Server::ServicesRegistryAddon>(OpcUa::Server::ServicesRegistryAddonID);
-  OpcUa::Remote::Computer::SharedPtr computer = servicesRegistry->GetComputer();
+  OpcUa::UaServer::ServicesRegistry::SharedPtr servicesRegistry = addons.GetAddon<OpcUa::UaServer::ServicesRegistry>(OpcUa::UaServer::ServicesRegistryAddonID);
+  OpcUa::Remote::Server::SharedPtr computer = servicesRegistry->GetServer();
 
   ServerInstance.reset(new Soap::Server(8888, Debug));
   ServerInstance->AddService(std::unique_ptr<ServiceImpl<DiscoveryService>>(new ServiceImpl<DiscoveryService>(computer, Debug)));

@@ -10,6 +10,7 @@
 #include "deserialize.h"
 
 #include <opc/ua/protocol/datetime.h>
+#include <opc/ua/string_utils.h>
 
 #include <algorithm>
 #include <sstream>

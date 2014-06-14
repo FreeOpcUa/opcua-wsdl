@@ -15,6 +15,7 @@
 #include "../src/serialization/deserialize.h"
 
 #include <opc/ua/protocol/types.h>
+#include <opc/ua/string_utils.h>
 
 #include <algorithm>
 #include <gtest/gtest.h>

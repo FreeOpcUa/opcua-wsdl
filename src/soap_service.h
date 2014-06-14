@@ -28,8 +28,8 @@ namespace OpcUa
     class ServiceImpl : public Service
     {
     public:
-      ServiceImpl(Remote::Computer::SharedPtr computer, bool debug)
-        : Computer(computer)
+      ServiceImpl(Remote::Server::SharedPtr computer, bool debug)
+        : Server(computer)
         , Debug(debug)
         , Impl(computer, debug)
       {
@@ -51,7 +51,7 @@ namespace OpcUa
       }
 
     private:
-      Remote::Computer::SharedPtr Computer;
+      Remote::Server::SharedPtr Server;
       bool Debug;
       ServiceType Impl;
     };
