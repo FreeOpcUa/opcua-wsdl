@@ -48,47 +48,18 @@ AC_ARG_WITH([gmock],
               AC_SUBST([GMOCK_LIB], [-lgmock])
            ])
 
-AC_ARG_WITH([uamappings],
-            [AS_HELP_STRING([--with-uamappings=DIR], [defines path to ua mappings root directory])],
-            [
-              AC_SUBST([UAMAPPINGS_LIBS], ["-L$with_uamappings/.libs -lopcuabinary"])
-              AC_SUBST([UAMAPPINGS_INCLUDES], [-I$with_uamappings/include])
-              AC_MSG_NOTICE([ua mappings path: $with_uamappings])
-            ],
-            [
-              AC_SUBST([UAMAPPINGS_LIBS], ["-lopcuabinary"])
-            ])
-
-AC_ARG_WITH([opccore],
-            [AS_HELP_STRING([--with-opccore=DIR], [defines path to the root directory of libopccore library.])],
-            [
-              AC_SUBST([OPC_CORE_LIBS], ["-L$with_opccore/.libs -lopcuacore -lxml2"])
-              AC_SUBST([OPC_CORE_INCLUDES], ["-I$with_opccore/include -I/usr/include/libxml2"])
-              AC_MSG_NOTICE([libopccore path: $with_opccore])
-            ],
-            [
-              AC_SUBST([OPC_CORE_INCLUDES], ["-I/usr/include/libxml2"])
-              AC_SUBST([OPC_CORE_LIBS], ["-lopcuacore -lxml2"])
-            ])
-
-AC_ARG_WITH([libopcuaclient],
-            [AS_HELP_STRING([--with-libopcuaclient=DIR], [defines path to the root directory of libopcua_client library.])],
-            [
-              AC_SUBST([OPC_CLIENT_LIBS], ["-L$with_libopcuaclient/.libs -lopcua_client"])
-              AC_SUBST([OPC_CLIENT_INCLUDES], [-I$with_libopcuaclient/include])
-              AC_MSG_NOTICE([libopcuaclient path: $with_libopcuaclient])
-            ],
-            [
-              AC_SUBST([OPC_CLIENT_LIBS], [-lopcua_client])
-            ])
 
 AC_ARG_WITH([opcuaserver],
-            [AS_HELP_STRING([--with-opcuaserver=DIR], [defines path to the root directory of opcua-server project.])],
+            [AS_HELP_STRING([--with-opcuaserver=DIR], [defines path to the root directory where opcua-server installed.])],
             [
-              AC_SUBST([OPCUA_SERVER_INCLUDES], ["-I$with_opcuaserver/endpoint_services/include -I$with_opcuaserver/services_registry/include"])
-              AC_MSG_NOTICE([opcuaserver path: $with_opcuaserver])
+              AC_SUBST([OPCUA_INCLUDES], ["-I$with_opcuaserver/include -I/usr/include/libxml2"])
+              AC_SUBST([OPCUA_LIBS], ["-L$with_opcuaserver/lib -lopcuacore -lxml2 -lopc_tcp_client -lopcuabinary"])
+    
+              AC_MSG_NOTICE([opcuaserver installation path: $with_opcuaserver])
             ],
             [
+              AC_SUBST([OPCUA_INCLUDES], ["-I/usr/include/libxml2"])
+              AC_SUBST([OPCUA_LIBS], ["-lopcuacore -lxml2 -lopc_tcp_client -lopcuabinary"])
             ])
 
 

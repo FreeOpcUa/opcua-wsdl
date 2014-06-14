@@ -637,13 +637,8 @@ am__EXEEXT_TRUE
 LTLIBOBJS
 LIBOBJS
 RELEASE_DATE
-OPCUA_SERVER_INCLUDES
-OPC_CLIENT_INCLUDES
-OPC_CLIENT_LIBS
-OPC_CORE_INCLUDES
-OPC_CORE_LIBS
-UAMAPPINGS_INCLUDES
-UAMAPPINGS_LIBS
+OPCUA_LIBS
+OPCUA_INCLUDES
 GMOCK_INCLUDES
 GMOCK_LIB
 GTEST_INCLUDES
@@ -782,9 +777,6 @@ with_sysroot
 enable_libtool_lock
 with_gtest
 with_gmock
-with_uamappings
-with_opccore
-with_libopcuaclient
 with_opcuaserver
 '
       ac_precious_vars='build_alias
@@ -1441,14 +1433,8 @@ Optional Packages:
                         (or the compiler's sysroot if not specified).
   --with-gtest=DIR        defines path to gtest root directory
   --with-gmock=DIR        defines path to gmock root directory
-  --with-uamappings=DIR   defines path to ua mappings root directory
-  --with-opccore=DIR      defines path to the root directory of libopccore
-                          library.
-  --with-libopcuaclient=DIR
-                          defines path to the root directory of
-                          libopcua_client library.
-  --with-opcuaserver=DIR  defines path to the root directory of opcua-server
-                          project.
+  --with-opcuaserver=DIR  defines path to the root directory where
+                          opcua-server installed.
 
 Some influential environment variables:
   CXX         C++ compiler command
@@ -15472,72 +15458,24 @@ fi
 
 
 
-# Check whether --with-uamappings was given.
-if test "${with_uamappings+set}" = set; then :
-  withval=$with_uamappings;
-              UAMAPPINGS_LIBS="-L$with_uamappings/.libs -lopcuabinary"
-
-              UAMAPPINGS_INCLUDES=-I$with_uamappings/include
-
-              { $as_echo "$as_me:${as_lineno-$LINENO}: ua mappings path: $with_uamappings" >&5
-$as_echo "$as_me: ua mappings path: $with_uamappings" >&6;}
-
-else
-
-              UAMAPPINGS_LIBS="-lopcuabinary"
-
-
-fi
-
-
-
-# Check whether --with-opccore was given.
-if test "${with_opccore+set}" = set; then :
-  withval=$with_opccore;
-              OPC_CORE_LIBS="-L$with_opccore/.libs -lopcuacore -lxml2"
-
-              OPC_CORE_INCLUDES="-I$with_opccore/include -I/usr/include/libxml2"
-
-              { $as_echo "$as_me:${as_lineno-$LINENO}: libopccore path: $with_opccore" >&5
-$as_echo "$as_me: libopccore path: $with_opccore" >&6;}
-
-else
-
-              OPC_CORE_INCLUDES="-I/usr/include/libxml2"
-
-              OPC_CORE_LIBS="-lopcuacore -lxml2"
-
-
-fi
-
-
-
-# Check whether --with-libopcuaclient was given.
-if test "${with_libopcuaclient+set}" = set; then :
-  withval=$with_libopcuaclient;
-              OPC_CLIENT_LIBS="-L$with_libopcuaclient/.libs -lopcua_client"
-
-              OPC_CLIENT_INCLUDES=-I$with_libopcuaclient/include
-
-              { $as_echo "$as_me:${as_lineno-$LINENO}: libopcuaclient path: $with_libopcuaclient" >&5
-$as_echo "$as_me: libopcuaclient path: $with_libopcuaclient" >&6;}
-
-else
-
-              OPC_CLIENT_LIBS=-lopcua_client
-
-
-fi
-
-
 
 # Check whether --with-opcuaserver was given.
 if test "${with_opcuaserver+set}" = set; then :
   withval=$with_opcuaserver;
-              OPCUA_SERVER_INCLUDES="-I$with_opcuaserver/endpoint_services/include -I$with_opcuaserver/services_registry/include"
+              OPCUA_INCLUDES="-I$with_opcuaserver/include -I/usr/include/libxml2"
 
-              { $as_echo "$as_me:${as_lineno-$LINENO}: opcuaserver path: $with_opcuaserver" >&5
-$as_echo "$as_me: opcuaserver path: $with_opcuaserver" >&6;}
+              OPCUA_LIBS="-L$with_opcuaserver/lib -lopcuacore -lxml2 -lopc_tcp_client -lopcuabinary"
+
+
+              { $as_echo "$as_me:${as_lineno-$LINENO}: opcuaserver installation path: $with_opcuaserver" >&5
+$as_echo "$as_me: opcuaserver installation path: $with_opcuaserver" >&6;}
+
+else
+
+              OPCUA_INCLUDES="-I/usr/include/libxml2"
+
+              OPCUA_LIBS="-lopcuacore -lxml2 -lopc_tcp_client -lopcuabinary"
+
 
 fi
 
