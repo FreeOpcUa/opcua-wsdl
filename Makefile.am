@@ -274,8 +274,8 @@ test_soap_CPPFLAGS = $(COMMON_INCLUDES) $(TESTINCLUDES) $(GSOAP_CFLAGS) $(SOAP_C
 test_soap_LDADD = libopcua_soap_protocol.la
 test_soap_LDFLAGS = $(TESTLIBS) $(OPCUA_LIBS) $(GSOAP_LIBS) -ldl -lpthread -Wl,--no-undefined
 
-install-exec-hook:
-	$(bindir)/opcua --register-module --id=http --path=libopcua_soap_client.so || test true
+#install-exec-hook:
+#	$(bindir)/opcua --register-module --id=http --path=libopcua_soap_client.so || test true
 
 
 clean-local:

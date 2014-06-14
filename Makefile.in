@@ -1543,8 +1543,7 @@ install-dvi: install-dvi-am
 install-dvi-am:
 
 install-exec-am: install-libLTLIBRARIES
-	@$(NORMAL_INSTALL)
-	$(MAKE) $(AM_MAKEFLAGS) install-exec-hook
+
 install-html: install-html-am
 
 install-html-am:
@@ -1588,7 +1587,7 @@ ps-am:
 uninstall-am: uninstall-clientconfigDATA uninstall-libLTLIBRARIES \
 	uninstall-serverconfigDATA
 
-.MAKE: all check-am install-am install-exec-am install-strip
+.MAKE: all check-am install-am install-strip
 
 .PHONY: CTAGS GTAGS all all-am am--refresh check check-TESTS check-am \
 	clean clean-checkPROGRAMS clean-generic clean-libLTLIBRARIES \
@@ -1600,15 +1599,15 @@ uninstall-am: uninstall-clientconfigDATA uninstall-libLTLIBRARIES \
 	dvi-am html html-am info info-am install install-am \
 	install-clientconfigDATA install-data install-data-am \
 	install-dvi install-dvi-am install-exec install-exec-am \
-	install-exec-hook install-html install-html-am install-info \
-	install-info-am install-libLTLIBRARIES install-man install-pdf \
-	install-pdf-am install-ps install-ps-am \
-	install-serverconfigDATA install-strip installcheck \
-	installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-compile \
-	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags uninstall uninstall-am uninstall-clientconfigDATA \
-	uninstall-libLTLIBRARIES uninstall-serverconfigDATA
+	install-html install-html-am install-info install-info-am \
+	install-libLTLIBRARIES install-man install-pdf install-pdf-am \
+	install-ps install-ps-am install-serverconfigDATA \
+	install-strip installcheck installcheck-am installdirs \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
+	pdf pdf-am ps ps-am tags uninstall uninstall-am \
+	uninstall-clientconfigDATA uninstall-libLTLIBRARIES \
+	uninstall-serverconfigDATA
 
 
 Bindings.h:
@@ -1747,8 +1746,8 @@ tests/browse.cpp: Bindings.h
 
 tests/get_endpoints.cpp: Bindings.h
 
-install-exec-hook:
-	$(bindir)/opcua --register-module --id=http --path=libopcua_soap_client.so || test true
+#install-exec-hook:
+#	$(bindir)/opcua --register-module --id=http --path=libopcua_soap_client.so || test true
 
 clean-local:
 	rm -rvf opcua-wsdl*$(VERSION)*
